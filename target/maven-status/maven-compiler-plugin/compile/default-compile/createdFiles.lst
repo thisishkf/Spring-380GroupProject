@@ -1,0 +1,17 @@
+model/Reply.class
+model/Poll.class
+model/Ticket.class
+dao/TopicRepositoryImpl$PollMapper.class
+controller/TicketController$Form.class
+controller/IndexController.class
+dao/TopicRepositoryImpl$UserRoleMapper.class
+dao/TopicRepositoryImpl$UserRowMapper.class
+model/Attachment.class
+view/DownloadingView.class
+dao/TopicRepository.class
+model/User.class
+dao/TopicRepositoryImpl.class
+controller/TicketController.class
+model/Topic.class
+dao/TopicRepositoryImpl$1.class
+model/Message.class
