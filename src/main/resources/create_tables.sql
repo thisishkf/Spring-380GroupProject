@@ -23,12 +23,13 @@ CREATE TABLE poll(
     PRIMARY KEY (poll_id)
 );
 
+
 CREATE TABLE poll_answer(
     answer_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     poll_id INTEGER NOT NULL,
     username VARCHAR(50) NOT NULL,
     answer VARCHAR(50) NOT NULL,
-    PRIMARY KEY (answer_id),
+    PRIMARY KEY (answer_id, answer),
     FOREIGN KEY (username) REFERENCES users(username)
 );
 

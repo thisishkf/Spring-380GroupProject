@@ -5,16 +5,26 @@
         <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     </head>
     <body>
-        Topic ID : ${param.id}<br/>
+        <div style="text-align: center; background-color: #777; color: white;">
+        Topic #${param.id}
+        </div>
         <div style="border-bottom:1px solid black"></div>
         <c:if test="${fn:length(messages) == 0}">
             <p>There is no message yet.</p>
         </c:if>
         <c:if test="${fn:length(messages) > 0}">
             <c:forEach var="message" items="${messages}">
-                ID : <c:out value="${message.id}" escapeXml="true" /><br />
-                Title:  <c:out value="${message.title}" escapeXml="true" /><br />
+                #<c:out value="${message.id}" escapeXml="true" />
+                :<c:out value="${message.title}" escapeXml="true" /><br />
                 Content: <c:out value="${message.content}" escapeXml="true" /><br />
+                Attachment: 
+                <security:authorize access="isAuthenticated()">
+                    
+                </security:authorize>
+                <security:authorize access="!isAuthenticated()">
+                    
+                </security:authorize>
+                <br/>
                 Owner: <c:out value="${message.username}" escapeXml="true" /><br />
                 <a href="discussion?id=${message.id}">Go to discuss</a>
 

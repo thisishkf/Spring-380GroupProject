@@ -2,92 +2,160 @@
 <html>
     <head>
         <title>HomePage</title>
+        <style>
+            ul {list-style: none;}
+            li {display: inline;}
+
+        </style>
     </head>
     <body>
-        <c:url var="logoutUrl" value="/logout"/>
-        <form action="${logoutUrl}" method="post">
-            <input type="submit" value="Log out" />
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
+        <div style="position: relative; float: right;">Hello, ${user}! 
+            <security:authorize access="isAuthenticated()">
+                <c:url var="logoutUrl" value="/logout"/>
+                <form action="${logoutUrl}" method="post">
+                    <input type="submit" value="Log out" />
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </security:authorize>
+        </div>
+            <div style="clear: both"></div>
+        <ul>
+            <security:authorize access="!isAuthenticated()">
+                <li>
+                    <a href="register">Register</a>
+                </li>
+                <li>
+                    <a href="login">Login</a>
+                </li>
+            </security:authorize>
+            <security:authorize access="hasAnyRole('ADMIN','su')">
+                <li>
+                    admin
 
-        <table border="1">
-            <tr><td><a href="login">Login</a></td></tr>
-            <tr><td><a href="register">Register</a></td></tr>
-            <tr><td><a href="admin">Admin</a></td></tr>
-        </table>
+                </li>
+            </security:authorize>
 
-        <h2>HomePage</h2>
 
-        <table border="1">
-            <tr><th colspan="2">Lecture</th></tr>
-            <tr><th>ID</th><th>Name</th></tr>
-                    <c:if test="${fn:length(lectures) <0}">
-                <tr><td colspan="2">No Lecture Available</td></tr>
-            </c:if>
-            <c:if test="${fn:length(lectures) >0}">
-                <c:forEach var="lecture" items="${lectures}">
-                    <tr><td>#${lecture.id}</td>
-                        <td><a href="viewMessage?id=${lecture.id}">${lecture.name}</a></td></tr>
-                </c:forEach>
-            </c:if>
-        </table>
+        </ul>
+
+
+
+
+
+
+
+
+        <div style="border-bottom: 1px dotted black"></div>
+
+        <div style="text-align: center; background-color: #777; color: white;">Lecture</div>
         <br/>
-        <table border="1">
-            <tr><th colspan="2">Lab</th></tr>
-            <tr><th>ID</th><th>Name</th></tr>
-                    <c:if test="${fn:length(labs) <0}">
-                <tr><td colspan="2">No Lab Available</td></tr>
-            </c:if>
-            <c:if test="${fn:length(labs) >0}">
-                <c:forEach var="lab" items="${labs}">
-                    <tr><td>#${lab.id}</td>
-                        <td><a href="viewMessage?id=${lab.id}">${lab.name}</a></td></tr>
-                </c:forEach>
-            </c:if>
-        </table>
+        <c:if test="${fn:length(lectures) <0}">
+            No other materials Available\
+        </c:if>
+        <c:if test="${fn:length(lectures) >0}">
+            <c:forEach var="lecture" items="${lectures}">
+                #${lecture.id} : 
+                <a href="viewMessage?id=${lecture.id}">${lecture.name}</a><br/>
+            </c:forEach>
+        </c:if>
         <br/>
-        <table border="1">
-            <tr><th colspan="2">Other</th></tr>
-            <tr><th>ID</th><th>Name</th></tr>
-                    <c:if test="${fn:length(others) <0}">
-                <tr><td colspan="2">No other materials Available</td></tr>
-            </c:if>
-            <c:if test="${fn:length(others) >0}">
-                <c:forEach var="other" items="${others}">
-                    <tr><td>#${other.id}</td>
-                        <td><a href="viewMessage?id=${other.id}">${other.name}</a></td></tr>
-                </c:forEach>
-            </c:if>
-        </table>
+
+        <div style="border-bottom: 1px solid black;"></div>
+
+        <div style="text-align: center; background-color: #777; color: white;">Lab</div>
         <br/>
-        <form>
+        <c:if test="${fn:length(labs) <0}">
+            No other materials Available\
+        </c:if>
+        <c:if test="${fn:length(labs) >0}">
+            <c:forEach var="lab" items="${labs}">
+                #${lab.id} : 
+                <a href="viewMessage?id=${lab.id}">${lab.name}</a><br/>
+            </c:forEach>
+        </c:if>
+        <br/>
+
+
+        <div style="border-bottom: 1px solid black;"></div>
+        <div style="text-align: center; background-color: #777; color: white;">Other</div>
+        <br/>
+        <c:if test="${fn:length(others) <0}">
+            No other materials Available\
+        </c:if>
+        <c:if test="${fn:length(others) >0}">
+            <c:forEach var="other" items="${others}">
+                #${other.id} : 
+                <a href="viewMessage?id=${other.id}">${other.name}</a><br/>
+            </c:forEach>
+        </c:if>
+        <br/>
+
+        <div style="border-bottom: 1px solid black;"></div>
+        <br/>
+        <form action="vote" method="POST">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="hidden" name="poll_id" value="${poll.id}"/>
-            <table border="1">
-                <tr><th colspan="3">Recent Poll</th><th>[<a href="pollHistory">history</a>]</th></tr>
-                        <c:if test="${fn:length(others) <0}">
-                    <tr><td colspan="4">No Poll Available</td></tr>
-                </c:if>
-                <c:if test="${fn:length(others) >0}">
-                    <tr><th colspan="4">${poll.title}</th></tr>
-                    <tr><th>${poll.a}</th><th>${poll.b}</th><th>${poll.c}</th><th>${poll.d}</th></tr>
-                    <tr><th>${poll.countA}</th><th>${poll.countB}</th><th>${poll.countC}</th><th>${poll.countD}</th></tr>
-                            <security:authorize access="hasAnyRole('USER','ADMIN')">
-                        <tr>
-                            <td><input type="radio" name="answer" value="a" ></td>
-                            <td><input type="radio" name="answer" value="b" ></td>
-                            <td><input type="radio" name="answer" value="c" ></td>
-                            <td><input type="radio" name="answer" value="d" ></td>
-                        </tr>
+            <div style="text-align: center; background-color: #777; color: white;">
+                Recent Poll 
+            </div>
+            [<a href="pollHistory">history</a>] [<a href="createPoll">Create</a>]
+            <br/>
+            <c:if test="${fn:length(others) <0}">
+                <br/>No Poll Available
+            </c:if>
+            <c:if test="${fn:length(others) >0}">
+                <br/>${poll.title}<br/>
+                A: ${poll.a}(${poll.countA})
+                <security:authorize access="isAuthenticated()">
+                    <c:if test="${pollAnswered == null}">
+                        <input type="radio" name="answer" value="A" >
+                    </c:if>
+                </security:authorize>
+                <br/>
 
-                                <tr><td colspan="2">You can only vote once.</td><td colspan="2"><input type="submit" value="Vote!"/></td></tr>
-                            </security:authorize>
-                            <security:authorize access="!hasAnyRole('USER','ADMIN')">
-                                    <tr><td colspan="4">Login to vote.</td></tr>    
-                                    
-                            </security:authorize>
+                B: ${poll.b}(${poll.countB})
+                <security:authorize access="isAuthenticated()">
+                    <c:if test="${pollAnswered == null}">
+                        <input type="radio" name="answer" value="B" >
+                    </c:if>
+                </security:authorize>
+                <br/>
+
+                <c:if test="${! empty poll.c}">
+                    C: ${poll.c}(${poll.countC})
+                    <security:authorize access="isAuthenticated()">
+                        <c:if test="${pollAnswered == null}">
+
+                            <input type="radio" name="answer" value="C" >
                         </c:if>
-            </table>
+
+                    </security:authorize><br/>
+                </c:if>
+                <c:if test="${! empty poll.c}">  
+                    D: ${poll.d}(${poll.countD})
+                    <security:authorize access="isAuthenticated()">
+                        <c:if test="${pollAnswered == null}">
+                            <input type="radio" name="answer" value="D" >
+                        </c:if>
+                    </security:authorize>
+                    <br/>
+                </c:if>
+                <security:authorize access="isAuthenticated()">  
+                    <c:if test="${pollAnswered == null}">
+                        You can only vote once.<input type="submit" value="Vote!"/><br/>
+                    </c:if>
+                </security:authorize>
+                Total Vote: ${poll.countA + poll.countB+poll.countC+poll.countD}<br/>
+                <c:if test="${pollAnswered != null}">
+                    Your Answer: ${pollAnswered.answer}
+                </c:if>  
+                <c:if test="${pollAnswered == null}">
+                    <security:authorize access="!isAuthenticated()">
+                        Login to vote. 
+                    </security:authorize>
+                </c:if> 
+            </c:if>
+
         </form>
 
 

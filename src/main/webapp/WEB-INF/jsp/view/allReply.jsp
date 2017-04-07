@@ -5,20 +5,32 @@
         <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     </head>
     <body>
-        Message ID:  <c:out value="${param.id}" escapeXml="true" /><br />
+        <div style="text-align: center; background-color: #777; color: white;">
+            Message #<c:out value="${param.id}" escapeXml="true" />
+        </div>
+        <div style="border-bottom:1px solid black"></div>
         <c:if test="${fn:length(replys) == 0}">
             <p>There is no message yet.</p>
         </c:if>
         <c:if test="${fn:length(replys) > 0 }">
             <c:forEach var="reply" items="${replys}">
-                ID : <c:out value="${reply.id}" escapeXml="true" /><br />
+                #<c:out value="${reply.id}" escapeXml="true" /><br />
                 <c:forEach var="user" items="${users}">
+
                     <c:if test="${user.name eq reply.username && user.status != 'active'}">
                         User is banned!
                     </c:if>
                     <c:if test="${user.name eq reply.username && user.status == 'active'}">
-                        Content: <c:out value="${reply.content}" escapeXml="true" /><br />
-                        Owner: <c:out value="${reply.username}" escapeXml="true" /><br />
+
+                        ${reply.username} : ${reply.content}<br />
+                        Attachment: 
+                        <security:authorize access="isAuthenticated()">
+
+                        </security:authorize>
+                        <security:authorize access="!isAuthenticated()">
+
+                        </security:authorize>
+                        <br/>
                         [<a href="deleteReply?id=${reply.id}&msg_id=${param.id}">Delete</a>]
                     </c:if>
                 </c:forEach>

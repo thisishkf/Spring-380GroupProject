@@ -8,7 +8,9 @@ package controller;
 
 import dao.TopicRepository;
 import java.security.Principal;
+import java.util.List;
 import model.Message;
+import model.PollAnswer;
 import model.Reply;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,16 @@ public class IndexController {
         model.addAttribute("labs", topicRepo.findTopics("lab"));
         model.addAttribute("others", topicRepo.findTopics("other"));
         model.addAttribute("poll", topicRepo.findPoll());
+        model.addAttribute("user", principal.getName());
+        List<PollAnswer> answerList = topicRepo.yourAnswer();
+        if (answerList.size() > 0) {
+            for (PollAnswer pa : answerList) {
+                if (pa.getUsername().equals(principal.getName())
+                        && pa.getPoll_id() == topicRepo.findPoll().getId()) {
+                    model.addAttribute("pollAnswered", pa);
+                }
+            }
+        }
         return "index";
     }
 
@@ -199,4 +211,50 @@ public class IndexController {
         return new RedirectView(path, true);
     }
 
+    @RequestMapping(value = "vote", method = RequestMethod.POST)
+    public View commitVote(WebRequest request, ModelMap model, Principal principal) {
+        int poll_id = Integer.parseInt(request.getParameter("poll_id"));
+        String username = principal.getName();
+        String answer = request.getParameter("answer");
+        topicRepo.CommitVote(username, poll_id, answer);
+
+        model.addAttribute("lectures", topicRepo.findTopics("lecture"));
+        model.addAttribute("labs", topicRepo.findTopics("lab"));
+        model.addAttribute("others", topicRepo.findTopics("other"));
+        model.addAttribute("poll", topicRepo.findPoll());
+        List<PollAnswer> answerList = topicRepo.yourAnswer();
+        if (answerList.size() > 0) {
+            for (PollAnswer pa : answerList) {
+                if (pa.getUsername().equals(principal.getName())
+                        && pa.getPoll_id() == topicRepo.findPoll().getId()) {
+                    model.addAttribute("pollAnswered", pa);
+                }
+            }
+        }
+        return new RedirectView("/", true);
+    }
+
+    @RequestMapping(value = "pollHistory", method = RequestMethod.GET)
+    public String pollHistory(ModelMap model) {
+        model.addAttribute("pollList", topicRepo.pollHistory());
+        return "pollHistory";
+    }
+
+    @RequestMapping("createPoll")
+    public String createPoll() {
+        return "createPoll";
+    }
+
+    @RequestMapping(value = "createPoll", method = RequestMethod.POST)
+    public View CommitCreatePoll(WebRequest request) {
+        String title = request.getParameter("title");
+        String a = request.getParameter("a");
+        String b = request.getParameter("b");
+        String c = request.getParameter("c");
+        String d = request.getParameter("d");
+
+        topicRepo.CreatePoll(title,a,b,c,d);
+        return new RedirectView("createPoll?status=ok", true);
+
+    }
 }

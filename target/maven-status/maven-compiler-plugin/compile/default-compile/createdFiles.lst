@@ -1,8 +1,10 @@
+model/PollAnswer.class
 model/Reply.class
 model/Poll.class
 model/Ticket.class
 dao/TopicRepositoryImpl$PollMapper.class
 controller/TicketController$Form.class
+dao/TopicRepositoryImpl$PollAnsMapper.class
 controller/IndexController.class
 dao/TopicRepositoryImpl$UserRoleMapper.class
 dao/TopicRepositoryImpl$UserRowMapper.class

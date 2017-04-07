@@ -3,14 +3,8 @@ package model;
 public class Poll {
     private int id;
     private String title;
-    private String a;
-    private String b;
-    private String c;
-    private String d;
-    private int countA;
-    private int countB;
-    private int countC;
-    private int countD;
+    private String a,b,c,d;
+    private int countA,countB,countC,countD;
     private int total;
 
     public int getId() {

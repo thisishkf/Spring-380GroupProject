@@ -3,6 +3,7 @@ package dao;
 import java.util.List;
 import model.Message;
 import model.Poll;
+import model.PollAnswer;
 import model.Reply;
 import model.Topic;
 import model.User;
@@ -13,7 +14,11 @@ public interface TopicRepository {
     public List<Topic> findTopics(String category);
     public Poll findPoll();
     public void publicRegister(User user);
-    
+    public boolean voted (String username, int poll_id);
+    public void CommitVote(String username, int poll_id, String answer);
+    public List<PollAnswer> yourAnswer(); 
+    public List<Poll> pollHistory();
+    public void CreatePoll(String title, String a,String b,String c,String d);
     //admin
     public List<User> listUser();
     public User findOneUser(String username);

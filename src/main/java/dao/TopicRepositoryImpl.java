@@ -8,10 +8,12 @@ import java.util.Map;
 import javax.sql.DataSource;
 import model.Message;
 import model.Poll;
+import model.PollAnswer;
 import model.Reply;
 import model.Topic;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -67,8 +69,24 @@ public class TopicRepositoryImpl implements TopicRepository {
         return poll;
     }
 
+    public List<PollAnswer> yourAnswer() {
+    String SQL_SELECT_ALL_TOPIC = "select * from poll_answer";
+
+        List<PollAnswer> answerList = new ArrayList<PollAnswer>();
+        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_SELECT_ALL_TOPIC);
+        for (Map<String, Object> row : rows) {
+            PollAnswer answer = new PollAnswer();
+            answer.setPoll_id((int) row.get("poll_id"));
+            answer.setUsername((String) row.get("username"));
+            answer.setAnswer((String) row.get("answer"));
+            answerList.add(answer);
+        }
+        return answerList;
+    }
+
     //Mapper
     private static final class PollMapper implements RowMapper<Poll> {
+
         @Override
         public Poll mapRow(ResultSet rs, int i) throws SQLException {
             Poll poll = new Poll();
@@ -78,6 +96,18 @@ public class TopicRepositoryImpl implements TopicRepository {
             poll.setB(rs.getString("b"));
             poll.setC(rs.getString("c"));
             poll.setD(rs.getString("d"));
+            return poll;
+        }
+    }
+
+    private static final class PollAnsMapper implements RowMapper<PollAnswer> {
+
+        @Override
+        public PollAnswer mapRow(ResultSet rs, int i) throws SQLException {
+            PollAnswer poll = new PollAnswer();
+            poll.setUsername(rs.getString("username"));
+            poll.setPoll_id(rs.getInt("poll_id"));
+            poll.setAnswer(rs.getString("answer"));
             return poll;
         }
     }
@@ -177,14 +207,14 @@ public class TopicRepositoryImpl implements TopicRepository {
     }
 
     //message
-    public List<Message> listMessage(int topic_id){
+    public List<Message> listMessage(int topic_id) {
         String SQL_find_MESSAGE = "select * from message where topic_id =?";
         List<Message> messages = new ArrayList<Message>();
-        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_find_MESSAGE,1);
+        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_find_MESSAGE, 1);
         for (Map<String, Object> row : rows) {
             Message msg = new Message();
             msg.setId((int) row.get("msg_id"));
-           
+
             msg.setTitle((String) row.get("msg_title"));
             msg.setContent((String) row.get("msg_content"));
             msg.setTopic_id((int) row.get("topic_id"));
@@ -194,11 +224,10 @@ public class TopicRepositoryImpl implements TopicRepository {
         return messages;
     }
 
-    
-    public List<Reply> listReply(int message_id){
+    public List<Reply> listReply(int message_id) {
         String SQL_find_MESSAGE = "select * from reply where msg_id =?";
         List<Reply> replyList = new ArrayList<Reply>();
-        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_find_MESSAGE,message_id);
+        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_find_MESSAGE, message_id);
         for (Map<String, Object> row : rows) {
             Reply reply = new Reply();
             reply.setId((int) row.get("reply_id"));
@@ -209,24 +238,85 @@ public class TopicRepositoryImpl implements TopicRepository {
         }
         return replyList;
     }
-    
-    public void addReply(Reply reply){
+
+    public void addReply(Reply reply) {
         String SQL_add_reply = "insert into reply (reply_content, msg_id, username) values (?,?,?)";
-        jdbcOp.update(SQL_add_reply,reply.getContent(),reply.getMessage_id(),reply.getUsername());
+        jdbcOp.update(SQL_add_reply, reply.getContent(), reply.getMessage_id(), reply.getUsername());
     }
-    
-    public void addMessage(Message message){
+
+    public void addMessage(Message message) {
         String SQL_add_reply = "insert into message (msg_title, msg_content, topic_id, username) values (?, ?,?,?)";
-        jdbcOp.update(SQL_add_reply,message.getTitle(), message.getContent(),message.getTopic_id(),message.getUsername());
+        jdbcOp.update(SQL_add_reply, message.getTitle(), message.getContent(), message.getTopic_id(), message.getUsername());
     }
-    
-    public void deleteReply(int reply_id){
+
+    public void deleteReply(int reply_id) {
         String SQL_delete_reply = "delete from reply where reply_id =?";
-        jdbcOp.update(SQL_delete_reply,reply_id);
+        jdbcOp.update(SQL_delete_reply, reply_id);
+    }
+
+    public void deleteMsg(int msg_id) {
+        String SQL_delete_reply = "delete from reply where msg_id =?";
+        jdbcOp.update(SQL_delete_reply, msg_id);
+        String SQL_delete_msg = "delete from message where msg_id =?";
+        jdbcOp.update(SQL_delete_msg, msg_id);
+    }
+
+    public boolean voted(String username, int poll_id) {
+        String SQL_CHECK_VOTE = "select count(*) from poll_answer where username =? and poll_id = ?";
+        int count = jdbcOp.queryForObject(SQL_CHECK_VOTE, Integer.class, username, poll_id);
+        if (count >= 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void CommitVote(String username, int poll_id, String answer) {
+        boolean voted = voted(username, poll_id);
+        if (voted == false) {
+            String SQL_add_poll = "insert into poll_answer (poll_id, username, answer) values (?, ?,?)";
+            jdbcOp.update(SQL_add_poll, poll_id, username, answer);
+        }
+    }
+
+    public List<Poll> pollHistory() {
+        String SQL_find_pollHistroy = "select * from poll where poll_id <> (select max(poll_id) from poll)";
+        List<Poll> pollList = new ArrayList<Poll>();
+        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_find_pollHistroy);
+        for (Map<String, Object> row : rows) {
+            Poll poll = new Poll();
+            poll.setId((int) row.get("poll_id"));
+            poll = findOnePoll(poll.getId());
+            pollList.add(poll);
+        }
+        return pollList;
+    }
+
+    public Poll findOnePoll(int id) {
+        Poll poll = new Poll();
+
+        String SQL_FIND_POLL = "select * from poll where poll_id = ?";
+        poll = jdbcOp.queryForObject(SQL_FIND_POLL, new PollMapper(), id);
+
+        String SQL_COUNTA = "select count(*) from poll_answer where answer='A' and poll_id = ?";
+        String SQL_COUNTB = "select count(*) from poll_answer where answer='B' and poll_id = ?";
+        String SQL_COUNTC = "select count(*) from poll_answer where answer='C' and poll_id = ?";
+        String SQL_COUNTD = "select count(*) from poll_answer where answer='D' and poll_id = ?";
+        int countA = jdbcOp.queryForObject(SQL_COUNTA, new Object[]{poll.getId()}, Integer.class);
+        int countB = jdbcOp.queryForObject(SQL_COUNTB, new Object[]{poll.getId()}, Integer.class);
+        int countC = jdbcOp.queryForObject(SQL_COUNTC, new Object[]{poll.getId()}, Integer.class);
+        int countD = jdbcOp.queryForObject(SQL_COUNTD, new Object[]{poll.getId()}, Integer.class);
+
+        poll.setCountA(countA);
+        poll.setCountB(countB);
+        poll.setCountC(countC);
+        poll.setCountD(countD);
+
+        return poll;
     }
     
-    public void deleteMsg(int msg_id){
-        String SQL_delete_msg = "delete from message where msg_id =?";
-        jdbcOp.update(SQL_delete_msg,msg_id);
+    public void CreatePoll(String title, String a,String b,String c,String d){
+        String SQL_INSERT_POLL = "insert into poll (poll_title, a,b,c,d) values ( ?, ?,?,?,?)";
+        jdbcOp.update(SQL_INSERT_POLL, title,a,b,c,d);
     }
 }

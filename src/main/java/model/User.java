@@ -50,7 +50,10 @@ public class User {
     }
     
     public boolean hasRole(String role){
-        return this.role.contains(role);
+        if( this.role.contains(role))
+            return true;
+        else 
+         return false;
     }
     
     public boolean hasAnyRole(String role,String role2){

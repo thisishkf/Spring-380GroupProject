@@ -15,7 +15,7 @@
     <body>
         <h1>Register</h1>
         <c:if test="${param.status == null}">
-            <form action="register" method="POST">
+            <form action="createPoll" method="POST">
                 <label for="username">User name:</label><br/>
                 <input type="text" id="username" name="username" /><br/><br/>
                 <label for="password">Password:</label><br/>
