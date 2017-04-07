@@ -39,7 +39,7 @@ public class IndexController {
         model.addAttribute("labs", topicRepo.findTopics("lab"));
         model.addAttribute("others", topicRepo.findTopics("other"));
         model.addAttribute("poll", topicRepo.findPoll());
-       /* model.addAttribute("user", principal.getName());
+        model.addAttribute("user", principal.getName());
         List<PollAnswer> answerList = topicRepo.yourAnswer();
         if (answerList.size() > 0) {
             for (PollAnswer pa : answerList) {
@@ -48,7 +48,7 @@ public class IndexController {
                     model.addAttribute("pollAnswered", pa);
                 }
             }
-        }*/
+        }
         return "index";
     }
 

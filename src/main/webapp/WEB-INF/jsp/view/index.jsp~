@@ -9,7 +9,7 @@
         </style>
     </head>
     <body>
-        <div style="position: relative; float: right;">
+        <div style="position: relative; float: right;">Hello, ${user}! 
             <security:authorize access="isAuthenticated()">
                 <c:url var="logoutUrl" value="/logout"/>
                 <form action="${logoutUrl}" method="post">
