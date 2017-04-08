@@ -13,6 +13,7 @@
         <title>Register | 380</title>
     </head>
     <body>
+        <jsp:include page="menu.jsp" />
         <h1>Register</h1>
         <c:if test="${param.status == null}">
             <form action="createPoll" method="POST">

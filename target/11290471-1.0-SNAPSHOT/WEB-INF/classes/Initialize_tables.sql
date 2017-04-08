@@ -1,12 +1,12 @@
 INSERT INTO users(username, password) VALUES ('admin', 'admin');
-INSERT INTO user_roles (username,userrole) VALUES ('admin', 'ADMIN');
+INSERT INTO user_roles (username,role) VALUES ('admin', 'ROLE_ADMIN');
 
 INSERT INTO users(username, password) VALUES ('user', 'user');
-INSERT INTO user_roles (username,userrole) VALUES ('user', 'USER');
+INSERT INTO user_roles (username,role) VALUES ('user', 'ROLE_USER');
 INSERT INTO users(username, password) VALUES ('samuel', 'sameul');
-INSERT INTO user_roles (username,userrole) VALUES ('samuel', 'USER');
+INSERT INTO user_roles (username,role) VALUES ('samuel', 'ROLE_USER');
 INSERT INTO users(username, password) VALUES ('ming', 'ming');
-INSERT INTO user_roles (username,userrole) VALUES ('ming', 'USER');
+INSERT INTO user_roles (username,role) VALUES ('ming', 'ROLE_USER');
 
 INSERT INTO poll (poll_title,a,b,c,d) VALUES ('Sam is handsome' , 'Very agree', 'cant agree more', 'ofcoz handsome' , 'agree');
 INSERT INTO poll_answer (poll_id, username, answer) VALUES (1, 'user', 'B');

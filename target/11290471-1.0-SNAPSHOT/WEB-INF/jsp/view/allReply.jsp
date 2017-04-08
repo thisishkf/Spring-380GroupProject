@@ -2,9 +2,19 @@
 <html>
     <head>
         <title>Messages | 380</title>
+        <style>
+            ul {list-style: none;padding: 0; margin: 0}
+            li {display: inline; 
+                background-color: 
+                    darkgrey; padding: 
+                    2px; padding-left:4px; 
+                padding-right: 4px;}
+            li a {text-decoration: none; color: white}
+        </style>
         <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     </head>
     <body>
+        <jsp:include page="menu.jsp" />
         <div style="text-align: center; background-color: #777; color: white;">
             Message #<c:out value="${param.id}" escapeXml="true" />
         </div>
@@ -31,18 +41,26 @@
 
                         </security:authorize>
                         <br/>
-                        [<a href="deleteReply?id=${reply.id}&msg_id=${param.id}">Delete</a>]
+                        <security:authorize access="hasRole('ADMIN')">
+                            [<a href="deleteReply?id=${reply.id}&msg_id=${param.id}">Delete</a>]
+                        </security:authorize>
                     </c:if>
                 </c:forEach>
                 <div style="border-bottom:1px solid black"></div>
             </c:forEach>
         </c:if>
-        <form action="AddCommit" id="usrform" method="post">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <input type="hidden" name="msg_id" value="${param.id}"/>
-            <h3>New Reply</h3>
-            <textarea rows="4" cols="50" name="comment" form="usrform">Enter your comment here.</textarea><br/>
-            <input type="submit" value="submit"/>
-        </form>
+                <br/>
+        <security:authorize access="hasAnyRole('ADMIN','USER')">
+            <form action="AddCommit" id="usrform" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <input type="hidden" name="msg_id" value="${param.id}"/>
+                <div style="border: 1px dotted black; padding : 2px;">
+                New Reply<br/>
+                <textarea rows="4" cols="50" name="comment" form="usrform" placeholder="Enter your reply here."></textarea><br/>
+                Attachment: <input type="file" name="attachments" multiple="multiple"/><br/><br/>
+                <input type="submit" value="submit"/>
+                </div>
+            </form>
+        </security:authorize>
     </body>
 </html>

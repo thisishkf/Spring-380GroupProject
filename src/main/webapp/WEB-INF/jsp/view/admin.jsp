@@ -4,6 +4,7 @@
         <title>Admin | 380</title>
     </head>
     <body>
+        <jsp:include page="menu.jsp" />
         <h2>Admin panel</h2>
         
         <table>

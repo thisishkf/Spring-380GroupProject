@@ -11,9 +11,20 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>CreatePoll | 380</title>
+        <style>
+            ul {list-style: none;padding: 0; margin: 0}
+            li {display: inline; 
+                background-color: 
+                    darkgrey; padding: 
+                    2px; padding-left:4px; 
+                padding-right: 4px;}
+            li a {text-decoration: none; color: white}
+        </style>
     </head>
     <body>
-        <h1>Register</h1>
+        <jsp:include page="menu.jsp" />
+        <h1>Create Poll</h1>
+        <div style="border-bottom: 1px dotted black"></div>
         <c:if test="${param.status == null}">
             <form action="createPoll" method="POST">
                 <label for="title">Poll title:</label><br/>
@@ -26,7 +37,7 @@
                 <input type="text" id="c" name="c" /><br/><br/>
                 <label for="d">Option D</label><br/>
                 <input type="text" id="d" name="d" /><br/><br/>
-                
+
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <input type="submit" value="Create"/>
             </form>

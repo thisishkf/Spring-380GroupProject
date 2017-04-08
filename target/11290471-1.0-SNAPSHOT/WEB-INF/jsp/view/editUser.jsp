@@ -13,38 +13,55 @@
         <title>Edit User | 380</title>
     </head>
     <body>
+        <jsp:include page="menu.jsp" />
         <h1>Edit User</h1>
-        <div class="menu">
-            <a href="index" class="button">Home</a>
-            <a href="register" class="button">Register</a>
-            <a href="login" class="button">Login</a>
-        </div>
-        <c:if test="${param.status == null}">
-            <form:form action="editUser" method="POST">
-                <input type="hidden" name="status" value="${user.status}"/>
-                <input type="hidden" id="username" name="username" value="${user.name}"/><br/>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
-                <table border="1">
-                    <tr>
-                        <td>User name:</td><td>${user.name}</td>
-                    </tr>
-                    <td>Password:</td>
-                    <td><form:password path ="password" value="${user.password}"/></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Role</td>
-                </tr>
-                <tr>
-                    <td><form:checkbox path="check" value="USRR"/>User</td>
-                    <td><form:checkbox path="check" value="ADMIN"/>Admin</td>
-                </tr>
-                    <tr><td colspan="2">
-                            <input type="submit" value="Edit"/>
-                        </td>
-                    </tr>
-                </table>
-            </form:form>
+        <c:if test="${param.status == null}">
+            <div style="border: 1px dotted black; padding : 2px;">
+                <form action="editUser" method="POST">
+                    <input type="hidden" id="username" name="username" value="${user.name}"/><br/>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                    User name : ${user.name}<br/>
+                    Password:
+                    <input type="password" name ="password" value="${user.password}"/><br />
+                    Role
+                    <c:set var="containsUser" value="false" />
+                    <c:set var="containsAdmin" value="false" />
+
+                    <c:forEach var="role" items="${user.role}">
+
+                        <c:if test="${role eq 'ROLE_USER'}">
+                            <c:set var="containsUser" value="true" />
+                        </c:if>
+
+                        <c:if test="${role eq 'ROLE_ADMIN'}">
+                            <c:set var="containsAdmin" value="true" />
+                        </c:if>
+
+                    </c:forEach>
+
+                    <c:if test="${containsUser}">
+                        <input type="checkbox" name="role" value="ROLE_USER" checked/>User 
+                    </c:if>
+
+                    <c:if test="${! containsUser}">
+                        <input type="checkbox" name="role" value="ROLE_USER"/>User 
+                    </c:if>
+
+                    <c:if test="${containsAdmin}">
+                        <input type="checkbox" name="role" value="ROLE_ADMIN" checked/>Admin 
+                    </c:if>
+
+                    <c:if test="${! containsAdmin}">
+                        <input type="checkbox" name="role" value="ROLE_ADMIN"/>Admin 
+                    </c:if>
+                    <br />
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <input type="submit" value="Edit"/>
+
+                </form>
+            </div>
         </c:if>
         <c:if test="${param.status =='ok'}">Register Success</c:if>
         <c:if test="${param.status =='error'}">Register Fail</c:if>

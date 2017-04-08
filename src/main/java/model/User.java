@@ -1,12 +1,13 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
     private String name;
     private String password;
     private String status;
-    private List<String> role;
+    private List<String> role = new ArrayList<>();
     private String[] check;
 
     public String[] getCheck() {

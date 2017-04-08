@@ -3,9 +3,19 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Poll History</title>
+        <style>
+            ul {list-style: none;padding: 0; margin: 0}
+            li {display: inline; 
+                background-color: 
+                    darkgrey; padding: 
+                    2px; padding-left:4px; 
+                padding-right: 4px;}
+            li a {text-decoration: none; color: white}
+        </style>
     </head>
     <body>
+        <jsp:include page="menu.jsp" />
         <h1>PollHistory</h1>
         <div style="border-bottom: 1px dotted black"></div>
         <c:if test="${fn:length(pollList) == 0}">
@@ -22,10 +32,10 @@
                 <div style="border-bottom:1px solid black"></div>
             </c:forEach>
         </c:if>
-        
-        
-        
-        
+
+
+
+
         <div style="border-bottom: 1px soild black"></div>
     </body>
 </html>

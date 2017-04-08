@@ -70,7 +70,7 @@ public class TopicRepositoryImpl implements TopicRepository {
     }
 
     public List<PollAnswer> yourAnswer() {
-    String SQL_SELECT_ALL_TOPIC = "select * from poll_answer";
+        String SQL_SELECT_ALL_TOPIC = "select * from poll_answer";
 
         List<PollAnswer> answerList = new ArrayList<PollAnswer>();
         List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_SELECT_ALL_TOPIC);
@@ -116,7 +116,7 @@ public class TopicRepositoryImpl implements TopicRepository {
         String SQL_INSERT_USER = "insert into users (username, password) values ( ?, ?)";
         jdbcOp.update(SQL_INSERT_USER, user.getName(), user.getPassword());
 
-        String SQL_CREATE_USERROLE = "insert into user_roles (username, userrole) values ( ?, ?)";
+        String SQL_CREATE_USERROLE = "insert into user_roles (username, role) values ( ?, ?)";
         jdbcOp.update(SQL_CREATE_USERROLE, user.getName(), user.getRole());
     }
 
@@ -158,10 +158,10 @@ public class TopicRepositoryImpl implements TopicRepository {
 
         String SQL_delete_USER = "DELETE FROM user_roles WHERE username = ?";
         jdbcOp.update(SQL_delete_USER, user.getName());
-
-        for (String a : user.getCheck()) {
-            String SQL_edit_USERROLE = "update user_roles set userrole =? where username = ?";
-            jdbcOp.update(SQL_edit_USER, a, user.getName());
+        
+        String SQL_edit_USERROLE = "insert into user_roles (username, role) values (?,?)";
+        for (String a : user.getRole()) {
+            jdbcOp.update(SQL_edit_USERROLE, user.getName(),a);
         }
     }
 
@@ -179,8 +179,12 @@ public class TopicRepositoryImpl implements TopicRepository {
         String SQL_find_one_USER = "select * from users where username = ?";
         User user = new User();
         user = jdbcOp.queryForObject(SQL_find_one_USER, new UserRowMapper(), username);
-        String SQL_find_ROLE = "select username, userrole from user_roles where username =?";
 
+        String SQL_find_one_USER_Roles = "select * from user_roles where username = ?";
+        List<Map<String, Object>> roleRows = jdbcOp.queryForList(SQL_find_one_USER_Roles, username);
+        for (Map<String, Object> rolerow : roleRows) {
+            user.addRole((String) rolerow.get("role"));
+        }
         return user;
     }
 
@@ -192,6 +196,7 @@ public class TopicRepositoryImpl implements TopicRepository {
             user.setName(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setStatus(rs.getString("status"));
+
             return user;
         }
     }
@@ -210,7 +215,7 @@ public class TopicRepositoryImpl implements TopicRepository {
     public List<Message> listMessage(int topic_id) {
         String SQL_find_MESSAGE = "select * from message where topic_id =?";
         List<Message> messages = new ArrayList<Message>();
-        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_find_MESSAGE, 1);
+        List<Map<String, Object>> rows = jdbcOp.queryForList(SQL_find_MESSAGE, topic_id);
         for (Map<String, Object> row : rows) {
             Message msg = new Message();
             msg.setId((int) row.get("msg_id"));
@@ -314,9 +319,14 @@ public class TopicRepositoryImpl implements TopicRepository {
 
         return poll;
     }
-    
-    public void CreatePoll(String title, String a,String b,String c,String d){
+
+    public void CreatePoll(String title, String a, String b, String c, String d) {
         String SQL_INSERT_POLL = "insert into poll (poll_title, a,b,c,d) values ( ?, ?,?,?,?)";
-        jdbcOp.update(SQL_INSERT_POLL, title,a,b,c,d);
+        jdbcOp.update(SQL_INSERT_POLL, title, a, b, c, d);
     }
+
+    public void addMsgAtt(String mimeContentType, byte[] contents, String name) {
+
+    }
+
 }

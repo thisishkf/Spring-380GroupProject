@@ -31,6 +31,7 @@ public interface TopicRepository {
     public List<Message> listMessage(int topic_id);
     public void deleteMsg(int msg_id);
     public void addMessage(Message message);
+    public void addMsgAtt(String mimeContentType,byte[] contents,String name);
     
     public List<Reply> listReply(int message_id);
     public void addReply(Reply reply);

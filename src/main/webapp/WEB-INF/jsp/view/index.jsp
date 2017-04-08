@@ -2,55 +2,15 @@
 <html>
     <head>
         <title>HomePage</title>
-        <style>
-            ul {list-style: none;}
-            li {display: inline;}
-
-        </style>
+            <jsp:include page="css.jsp" />
     </head>
     <body>
-        <div style="position: relative; float: right;">
-            <security:authorize access="isAuthenticated()">
-                <c:url var="logoutUrl" value="/logout"/>
-                <form action="${logoutUrl}" method="post">
-                    <input type="submit" value="Log out" />
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-            </security:authorize>
-        </div>
-            <div style="clear: both"></div>
-        <ul>
-            <security:authorize access="!isAuthenticated()">
-                <li>
-                    <a href="register">Register</a>
-                </li>
-                <li>
-                    <a href="login">Login</a>
-                </li>
-            </security:authorize>
-            <security:authorize access="hasAnyRole('ADMIN','su')">
-                <li>
-                    admin
-
-                </li>
-            </security:authorize>
-
-
-        </ul>
-
-
-
-
-
-
-
-
-        <div style="border-bottom: 1px dotted black"></div>
+        <jsp:include page="menu.jsp" />
 
         <div style="text-align: center; background-color: #777; color: white;">Lecture</div>
         <br/>
         <c:if test="${fn:length(lectures) <0}">
-            No other materials Available\
+            No other materials Available
         </c:if>
         <c:if test="${fn:length(lectures) >0}">
             <c:forEach var="lecture" items="${lectures}">
@@ -65,7 +25,7 @@
         <div style="text-align: center; background-color: #777; color: white;">Lab</div>
         <br/>
         <c:if test="${fn:length(labs) <0}">
-            No other materials Available\
+            No other materials Available
         </c:if>
         <c:if test="${fn:length(labs) >0}">
             <c:forEach var="lab" items="${labs}">
@@ -80,7 +40,7 @@
         <div style="text-align: center; background-color: #777; color: white;">Other</div>
         <br/>
         <c:if test="${fn:length(others) <0}">
-            No other materials Available\
+            No other materials Available
         </c:if>
         <c:if test="${fn:length(others) >0}">
             <c:forEach var="other" items="${others}">
@@ -98,13 +58,16 @@
             <div style="text-align: center; background-color: #777; color: white;">
                 Recent Poll 
             </div>
-            [<a href="pollHistory">history</a>] [<a href="createPoll">Create</a>]
+            [<a href="pollHistory">history</a>] 
+            <security:authorize access="hasRole('ADMIN')">
+                [<a href="createPoll">Create</a>]
+            </security:authorize>
             <br/>
             <c:if test="${fn:length(others) <0}">
                 <br/>No Poll Available
             </c:if>
             <c:if test="${fn:length(others) >0}">
-                <br/>${poll.title}<br/>
+                <br/>Poll title: ${poll.title}<br/>
                 A: ${poll.a}(${poll.countA})
                 <security:authorize access="isAuthenticated()">
                     <c:if test="${pollAnswered == null}">
@@ -158,6 +121,6 @@
 
         </form>
 
-
+            <jsp:include page="footer.jsp" />
     </body>
 </html>

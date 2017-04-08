@@ -24,6 +24,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+import model.Poll;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 public class IndexController {
@@ -33,22 +36,28 @@ public class IndexController {
     @Autowired
     TopicRepository topicRepo;
 
-    @RequestMapping("/")
+    @RequestMapping({"/", "home"})
     public String index(ModelMap model, Principal principal) {
         model.addAttribute("lectures", topicRepo.findTopics("lecture"));
         model.addAttribute("labs", topicRepo.findTopics("lab"));
         model.addAttribute("others", topicRepo.findTopics("other"));
         model.addAttribute("poll", topicRepo.findPoll());
-       /* model.addAttribute("user", principal.getName());
-        List<PollAnswer> answerList = topicRepo.yourAnswer();
-        if (answerList.size() > 0) {
-            for (PollAnswer pa : answerList) {
-                if (pa.getUsername().equals(principal.getName())
-                        && pa.getPoll_id() == topicRepo.findPoll().getId()) {
-                    model.addAttribute("pollAnswered", pa);
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                && //when Anonymous Authentication is enabled
+                !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            model.addAttribute("user", principal.getName());
+
+            List<PollAnswer> answerList = topicRepo.yourAnswer();
+            if (answerList.size() > 0) {
+                for (PollAnswer pa : answerList) {
+                    if (pa.getUsername().equals(principal.getName())
+                            && pa.getPoll_id() == topicRepo.findPoll().getId()) {
+                        model.addAttribute("pollAnswered", pa);
+                    }
                 }
             }
-        }*/
+        }
         return "index";
     }
 
@@ -71,7 +80,7 @@ public class IndexController {
             User user = new User();
             user.setName(username);
             user.setPassword(password);
-            user.addRole("user");
+            user.addRole("ROLE_USER");
             topicRepo.publicRegister(user);
             return new RedirectView("register?status=ok", true);
         }
@@ -109,11 +118,26 @@ public class IndexController {
         return "admin";
     }
 
-    /*public String adminEditUser(WebRequest request,ModelMap model) {
-        String username = request.getParameter("name");  
-        model.addAttribute("user",topicRepo.findOneUser(username));
-        return "editUser";
-    }*/
+    @RequestMapping(value = "editUser", method = RequestMethod.POST)
+    public View adminCommitEditUser(WebRequest request, ModelMap model) {
+        
+        User user = new User();
+        
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String[] roles = request.getParameterValues("role");
+        
+        user.setName(username);
+        user.setPassword(password);
+        
+        for (String role : roles) {
+            user.addRole(role);
+        }
+        
+        topicRepo.editUser(user);
+        return new RedirectView("admin", true);
+    }
+
     @RequestMapping(value = "editUser", method = RequestMethod.GET)
     public ModelAndView adminEditUser(WebRequest request, ModelMap model) {
         String username = request.getParameter("name");
@@ -121,13 +145,6 @@ public class IndexController {
         return new ModelAndView("editUser", "command", new User());
     }
 
-    @RequestMapping(value = "/editUser", method = RequestMethod.POST)
-    public String adminCommitEditUser(@ModelAttribute("SpringWeb") User user,
-            ModelMap model) {
-        topicRepo.editUser(user);
-        model.addAttribute("users", topicRepo.listUser());
-        return "admin";
-    }
 
     /*@RequestMapping(value = "editUser", method = RequestMethod.POST)
     public String adminCommitEditUser(WebRequest request, ModelMap model) {
@@ -206,6 +223,17 @@ public class IndexController {
         message.setTopic_id(topic_id);
         message.setUsername(principal.getName());
         topicRepo.addMessage(message);
+
+        /*for (MultipartFile filePart : form.getAttachments()) {
+ 
+            String fileName = filePart.getOriginalFilename();
+            String fileType = filePart.getContentType();
+            byte[] att_data = filePart.getBytes();
+            if (fileName != null && fileName.length() > 0
+                    && att_data != null && att_data.length > 0) {
+                ticket.addAttachment(attachment);
+            }
+        }*/
         String path = "viewMessage?id=" + topic_id;
         model.addAttribute("messages", topicRepo.listMessage(topic_id));
         return new RedirectView(path, true);
@@ -253,7 +281,7 @@ public class IndexController {
         String c = request.getParameter("c");
         String d = request.getParameter("d");
 
-        topicRepo.CreatePoll(title,a,b,c,d);
+        topicRepo.CreatePoll(title, a, b, c, d);
         return new RedirectView("createPoll?status=ok", true);
 
     }
