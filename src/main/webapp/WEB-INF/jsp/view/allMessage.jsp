@@ -46,7 +46,15 @@
                                     </c:if>
                                 </security:authorize>
                                 <security:authorize access="!isAuthenticated()">
-                                    ${attachment.name} ,
+                                    <c:if test="${attachment.key eq message.id}">
+                                        Attachment: 
+                                        
+                                            <c:forEach var="oneAtt" items="${attachment.value}">
+                                            
+                                            ${oneAtt.name} , 
+                                            </c:forEach>
+                                        
+                                    </c:if>
                                 </security:authorize>
                             </c:forEach>
                             <br/>
