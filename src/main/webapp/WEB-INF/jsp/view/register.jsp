@@ -16,7 +16,7 @@
         <jsp:include page="menu.jsp" />
         <h1>Register</h1>
         <c:if test="${param.status == null}">
-            <form action="createPoll" method="POST">
+            <form action="register" method="POST">
                 <label for="username">User name:</label><br/>
                 <input type="text" id="username" name="username" /><br/><br/>
                 <label for="password">Password:</label><br/>

@@ -1,9 +1,18 @@
 package model;
 
 public class Attachment {
+    private long id;
     private String name;
     private String mimeContentType;
     private byte[] contents;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

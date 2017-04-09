@@ -33,14 +33,27 @@
                     <c:if test="${user.name eq reply.username && user.status == 'active'}">
 
                         ${reply.username} : ${reply.content}<br />
-                        Attachment: 
-                        <security:authorize access="isAuthenticated()">
-
-                        </security:authorize>
-                        <security:authorize access="!isAuthenticated()">
-
-                        </security:authorize>
-                        <br/>
+                        
+                        <c:if test="${fn:length(attachmentDatabase) > 0 }">
+                            
+                            <c:forEach var="attachment" items="${attachmentDatabase}">
+                                <security:authorize access="isAuthenticated()">
+                                    <c:if test="${attachment.key eq reply.id}">
+                                        Attachment: 
+                                        
+                                            <c:forEach var="oneAtt" items="${attachment.value}">
+                                            <a href="attachment?attachmentID=${oneAtt.id}&reply_id=${reply.id}">
+                                            ${oneAtt.name} , 
+                                            </c:forEach>
+                                        </a>
+                                    </c:if>
+                                </security:authorize>
+                                <security:authorize access="!isAuthenticated()">
+                                    ${attachment.name} ,
+                                </security:authorize>
+                            </c:forEach>
+                            <br/>
+                        </c:if>
                         <security:authorize access="hasRole('ADMIN')">
                             [<a href="deleteReply?id=${reply.id}&msg_id=${param.id}">Delete</a>]
                         </security:authorize>
@@ -49,18 +62,20 @@
                 <div style="border-bottom:1px solid black"></div>
             </c:forEach>
         </c:if>
-                <br/>
+        <br/>
         <security:authorize access="hasAnyRole('ADMIN','USER')">
-            <form action="AddCommit" id="usrform" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                <input type="hidden" name="msg_id" value="${param.id}"/>
-                <div style="border: 1px dotted black; padding : 2px;">
-                New Reply<br/>
-                <textarea rows="4" cols="50" name="comment" form="usrform" placeholder="Enter your reply here."></textarea><br/>
-                Attachment: <input type="file" name="attachments" multiple="multiple"/><br/><br/>
-                <input type="submit" value="submit"/>
-                </div>
-            </form>
+            <form:form method="POST" enctype="multipart/form-data"
+                       modelAttribute="replyForm">
+                <form:hidden path="msg_id"  value="${param.id}"/>
+                
+
+                <form:label path="content">Content:</form:label><br/>
+                <form:input type="text" path="content"/><br/><br/>
+
+                <b>Attachments</b><br/>
+                <input type="file" name="attachments" multiple="multiple"/><br/><br/>
+                <input type="submit" value="Submit"/>
+            </form:form>
         </security:authorize>
     </body>
 </html>

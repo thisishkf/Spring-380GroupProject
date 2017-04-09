@@ -12,8 +12,10 @@ model/Attachment.class
 view/DownloadingView.class
 dao/TopicRepository.class
 model/User.class
+controller/IndexController$MessageForm.class
 dao/TopicRepositoryImpl.class
 controller/TicketController.class
 model/Topic.class
 dao/TopicRepositoryImpl$1.class
 model/Message.class
+controller/IndexController$ReplyForm.class

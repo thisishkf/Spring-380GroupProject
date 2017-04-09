@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+import model.Attachment;
 import model.Message;
 import model.Poll;
 import model.PollAnswer;
@@ -13,7 +14,6 @@ import model.Reply;
 import model.Topic;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -116,8 +116,8 @@ public class TopicRepositoryImpl implements TopicRepository {
         String SQL_INSERT_USER = "insert into users (username, password) values ( ?, ?)";
         jdbcOp.update(SQL_INSERT_USER, user.getName(), user.getPassword());
 
-        String SQL_CREATE_USERROLE = "insert into user_roles (username, role) values ( ?, ?)";
-        jdbcOp.update(SQL_CREATE_USERROLE, user.getName(), user.getRole());
+        String SQL_CREATE_USERROLE = "INSERT INTO user_roles (username,role) VALUES ( ?, ?)";
+        jdbcOp.update(SQL_CREATE_USERROLE, user.getName(), "ROLE_USER");
     }
 
     //admin
@@ -158,10 +158,10 @@ public class TopicRepositoryImpl implements TopicRepository {
 
         String SQL_delete_USER = "DELETE FROM user_roles WHERE username = ?";
         jdbcOp.update(SQL_delete_USER, user.getName());
-        
+
         String SQL_edit_USERROLE = "insert into user_roles (username, role) values (?,?)";
         for (String a : user.getRole()) {
-            jdbcOp.update(SQL_edit_USERROLE, user.getName(),a);
+            jdbcOp.update(SQL_edit_USERROLE, user.getName(), a);
         }
     }
 
@@ -329,4 +329,24 @@ public class TopicRepositoryImpl implements TopicRepository {
 
     }
 
+    public void addReplyAtt(int reply_id, String user, Attachment att) {
+        String SQL_INSERT_Att = "insert into reply_attachments (reply_id, username, att_name, att_mimetype, att_data) "
+                + "values (?, ?, ?, ?, ?)";
+        String content = new String(att.getContents());
+        jdbcOp.update(SQL_INSERT_Att, reply_id, user, att.getName(), 
+                att.getMimeContentType(), content);
+
+    }
+
+    public int findReply() {
+        String SQL_find_max = "select reply_id from reply where reply_id = (select max(reply_id) from reply)";
+        int id = jdbcOp.queryForObject(SQL_find_max, Integer.class);
+        return id;
+    }
+    
+    public int findMsg() {
+        String SQL_find_max = "select msg_id from message where msg_id = (select max(msg_id) from message)";
+        int id = jdbcOp.queryForObject(SQL_find_max, Integer.class);
+        return id;
+    }
 }

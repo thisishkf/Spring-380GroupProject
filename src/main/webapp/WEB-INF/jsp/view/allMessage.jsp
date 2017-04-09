@@ -31,14 +31,26 @@
                 #<c:out value="${message.id}" escapeXml="true" />
                 :<c:out value="${message.title}" escapeXml="true" /><br />
                 Content: <c:out value="${message.content}" escapeXml="true" /><br />
-                Attachment: 
-                <security:authorize access="isAuthenticated()">
-
-                </security:authorize>
-                <security:authorize access="!isAuthenticated()">
-
-                </security:authorize>
-                <br/>
+                <c:if test="${fn:length(attachmentDatabase) > 0 }">
+                            
+                            <c:forEach var="attachment" items="${attachmentDatabase}">
+                                <security:authorize access="isAuthenticated()">
+                                    <c:if test="${attachment.key eq message.id}">
+                                        Attachment: 
+                                        
+                                            <c:forEach var="oneAtt" items="${attachment.value}">
+                                            <a href="Msgattachment?attachmentID=${oneAtt.id}&message_id=${message.id}">
+                                            ${oneAtt.name} , 
+                                            </c:forEach>
+                                        </a>
+                                    </c:if>
+                                </security:authorize>
+                                <security:authorize access="!isAuthenticated()">
+                                    ${attachment.name} ,
+                                </security:authorize>
+                            </c:forEach>
+                            <br/>
+                        </c:if>
                 Owner: <c:out value="${message.username}" escapeXml="true" /><br />
                 <a href="discussion?id=${message.id}">Go to discuss</a>
                 <security:authorize access="hasRole('ADMIN')">
@@ -49,17 +61,27 @@
         </c:if>
         <br />
         <security:authorize access="hasAnyRole('ADMIN','USER')">
-            <form action="AddMessage" id="usrform" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                <input type="hidden" name="topic_id" value="${param.id}"/>
-                <div style="border: 1px dotted black; padding : 2px;">
-                    New Message <br />
-                    Title: <input type="text" name="title"/> <br />
-                    Content: <input type="text" name="content"/> <br />
-                    Attachment: <input type="file" name="attachments" multiple="multiple"/><br/><br/>
-                    <input type="submit" value="submit"/>
-                </div>
-            </form>
+
+            <div style="border: 1px dotted black; padding : 2px;">
+                <form:form method="POST" enctype="multipart/form-data"
+                           modelAttribute="messageForm">
+
+                    <form:hidden path="topic_id" value="${param.id}"/>
+                    <form:label path="title">Title:</form:label><br/>
+                    <form:input type="text" path="title" /><br/><br/>
+
+                    <form:label path="content">Content:</form:label><br/>
+                    <form:input type="text" path="content"/><br/><br/>
+
+                    <b>Attachments</b><br/>
+                    <input type="file" name="attachments" multiple="multiple"/><br/><br/>
+                    <input type="submit" value="Submit"/>
+                </form:form>
+            </div>
+
         </security:authorize>
+
+
+
     </body>
 </html>

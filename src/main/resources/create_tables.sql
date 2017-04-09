@@ -63,20 +63,23 @@ CREATE TABLE reply(
 
 CREATE TABLE msg_attachments(
     att_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-    att_name VARCHAR(60) NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    att_mimetype VARCHAR(60) NOT NULL,
-    att_data varbinary(1024) NOT NULL,
-    PRIMARY KEY (att_id),
-    FOREIGN KEY (username) REFERENCES users(username)
-);
-
-CREATE TABLE reply_attachments(
-    att_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    msg_id int NOT NULL,
     att_name VARCHAR(60) NOT NULL,
     username VARCHAR(50) NOT NULL,
     att_mimetype VARCHAR(60) NOT NULL,
     att_data VARCHAR(8000) NOT NULL,
     PRIMARY KEY (att_id),
-    FOREIGN KEY (username) REFERENCES users(username)
+    FOREIGN KEY (username) REFERENCES users(username),
+    FOREIGN KEY (msg_id) REFERENCES message(msg_id)
+);
+
+CREATE TABLE reply_attachments(
+    att_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    reply_id int NOT NULL,
+    att_name VARCHAR(60) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    att_mimetype VARCHAR(60) NOT NULL,
+    att_data VARCHAR(8000) NOT NULL,
+    PRIMARY KEY (att_id),
+    FOREIGN KEY (reply_id) REFERENCES reply(reply_id)
 );

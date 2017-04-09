@@ -1,6 +1,7 @@
 package dao;
 
 import java.util.List;
+import model.Attachment;
 import model.Message;
 import model.Poll;
 import model.PollAnswer;
@@ -32,8 +33,11 @@ public interface TopicRepository {
     public void deleteMsg(int msg_id);
     public void addMessage(Message message);
     public void addMsgAtt(String mimeContentType,byte[] contents,String name);
+    public int findMsg();
     
     public List<Reply> listReply(int message_id);
     public void addReply(Reply reply);
     public void deleteReply(int msg_id);
+    public void addReplyAtt(int reply_id, String user,Attachment att);
+    public int findReply();
 }
