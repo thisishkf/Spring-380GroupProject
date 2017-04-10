@@ -10,7 +10,7 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
 
-        <h2>Create a Topic</h2>
+        <h1>Create a Topic</h1>
 
         <form action="add" method="POST">
             <table>

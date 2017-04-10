@@ -5,7 +5,7 @@
     </head>
     <body>
 
-        <h2>Topic #${topic.topic_id}</h2>
+        <h1>Topic #${topic.topic_id}</h1>
         
         <form action="edit" method="POST">
             <table>

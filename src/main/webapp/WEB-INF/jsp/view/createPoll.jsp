@@ -23,10 +23,12 @@
     </head>
     <body>
         <jsp:include page="menu.jsp" />
+        <div style="text-align: left; background-color: #bcbcbc; color: black;">
         <h1>Create Poll</h1>
+        </div>
         <div style="border-bottom: 1px dotted black"></div>
         <c:if test="${param.status == null}">
-            <form action="createPoll" method="POST">
+            <form  action="createPoll" method="POST">
                 <label for="title">Poll title:</label><br/>
                 <input type="text" id="username" name="title" /><br/><br/>
                 <label for="a">Option A</label><br/>

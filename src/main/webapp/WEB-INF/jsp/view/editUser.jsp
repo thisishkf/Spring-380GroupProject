@@ -11,10 +11,25 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Edit User | 380</title>
+        <style>
+            ul {list-style: none;padding: 0; margin: 0}
+            li {display: inline; 
+                background-color: 
+                    darkgrey; padding: 
+                    2px; padding-left:4px; 
+                padding-right: 4px;}
+            li a {text-decoration: none; color: white}
+            li:hover, li a:hover{
+                background-color: white;
+                color: black;
+            }
+        </style>
     </head>
     <body>
         <jsp:include page="menu.jsp" />
-        <h1>Edit User</h1>
+        <div style="text-align: left; background-color: #DCDCDC; color: black;">    
+            <h1>Edit User</h1>
+        </div>
 
         <c:if test="${param.status == null}">
             <div style="border: 1px dotted black; padding : 2px;">

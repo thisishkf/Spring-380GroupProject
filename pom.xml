@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>11290471</groupId>
-    <artifactId>11290471</artifactId>
+    <artifactId>11290471-HOKinFai-1234</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>groupProject</name>
+    <name>11290471-HOKinFai-1234</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>

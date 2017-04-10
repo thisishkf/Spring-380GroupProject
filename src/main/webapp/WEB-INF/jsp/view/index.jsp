@@ -7,7 +7,7 @@
     <body>
         <jsp:include page="menu.jsp" />
 
-        <div style="text-align: center; background-color: #777; color: white;">Lecture</div>
+        <div style="text-align: center; background-color: #bcbcbc; color: white;"><font size="5">Lecture</font></div>
         <br/>
         <c:if test="${fn:length(lectures) <0}">
             No other materials Available
@@ -22,7 +22,7 @@
 
         <div style="border-bottom: 1px solid black;"></div>
 
-        <div style="text-align: center; background-color: #777; color: white;">Lab</div>
+        <div style="text-align: center; background-color: #bcbcbc; color: white;"><font size="5">Lab</font></div>
         <br/>
         <c:if test="${fn:length(labs) <0}">
             No other materials Available
@@ -37,7 +37,7 @@
 
 
         <div style="border-bottom: 1px solid black;"></div>
-        <div style="text-align: center; background-color: #777; color: white;">Other</div>
+        <div style="text-align: center; background-color: #bcbcbc; color: white;"><font size="5">Other</font></div>
         <br/>
         <c:if test="${fn:length(others) <0}">
             No other materials Available
@@ -55,8 +55,8 @@
         <form action="vote" method="POST">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="hidden" name="poll_id" value="${poll.id}"/>
-            <div style="text-align: center; background-color: #777; color: white;">
-                Recent Poll 
+            <div  style="text-align: center; background-color: #bcbcbc; color: white;">
+                <font size="4">Recent Poll </font>
             </div>
             [<a href="pollHistory">history</a>] 
             <security:authorize access="hasRole('ADMIN')">
@@ -67,8 +67,8 @@
                 <br/>No Poll Available
             </c:if>
             <c:if test="${fn:length(others) >0}">
-                <br/>Poll title: ${poll.title}<br/>
-                A: ${poll.a}(${poll.countA})
+                <br/><strong>Poll title: </strong>${poll.title}<br/><br/>
+                &nbsp;&nbsp;A: ${poll.a}(${poll.countA})
                 <security:authorize access="isAuthenticated()">
                     <c:if test="${pollAnswered == null}">
                         <input type="radio" name="answer" value="A" >
@@ -76,7 +76,7 @@
                 </security:authorize>
                 <br/>
 
-                B: ${poll.b}(${poll.countB})
+                &nbsp;&nbsp;B: ${poll.b}(${poll.countB})
                 <security:authorize access="isAuthenticated()">
                     <c:if test="${pollAnswered == null}">
                         <input type="radio" name="answer" value="B" >
@@ -85,7 +85,7 @@
                 <br/>
 
                 <c:if test="${! empty poll.c}">
-                    C: ${poll.c}(${poll.countC})
+                    &nbsp;&nbsp;C: ${poll.c}(${poll.countC})
                     <security:authorize access="isAuthenticated()">
                         <c:if test="${pollAnswered == null}">
 
@@ -95,17 +95,17 @@
                     </security:authorize><br/>
                 </c:if>
                 <c:if test="${! empty poll.c}">  
-                    D: ${poll.d}(${poll.countD})
+                    &nbsp;&nbsp;D: ${poll.d}(${poll.countD})
                     <security:authorize access="isAuthenticated()">
                         <c:if test="${pollAnswered == null}">
                             <input type="radio" name="answer" value="D" >
                         </c:if>
                     </security:authorize>
-                    <br/>
+                    <br/><br/>
                 </c:if>
                 <security:authorize access="isAuthenticated()">  
                     <c:if test="${pollAnswered == null}">
-                        You can only vote once.<input type="submit" value="Vote!"/><br/>
+                        You can only vote once.&nbsp;&nbsp;<input type="submit" value="Vote!"/><br/>
                     </c:if>
                 </security:authorize>
                 Total Vote: ${poll.countA + poll.countB+poll.countC+poll.countD}<br/>

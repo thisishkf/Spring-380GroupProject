@@ -15,7 +15,7 @@
     </head>
     <body>
         <jsp:include page="menu.jsp" />
-        <div style="text-align: center; background-color: #777; color: white;">
+        <div style="text-align: center; background-color: #DCDCDC; color: black;">
             Message #<c:out value="${param.id}" escapeXml="true" />
         </div>
         <div style="border-bottom:1px solid black"></div>

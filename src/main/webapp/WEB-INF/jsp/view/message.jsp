@@ -15,8 +15,9 @@
             <input type="submit" value="Log out" />
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-
+        <div style="text-align: left; background-color: #DCDCDC; color: black;">    
         <h2>Message</h2>
+        </div>
 
 
 

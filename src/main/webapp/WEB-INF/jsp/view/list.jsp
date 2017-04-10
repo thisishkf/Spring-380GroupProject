@@ -10,7 +10,9 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
 
-        <h2>Tickets</h2>
+        <div style="text-align: left; background-color: #DCDCDC; color: black;">    
+            <h2>Tickets</h2>
+        </div>
         <a href="<c:url value="/ticket/create" />">Create a Ticket</a><br /><br />
         <c:choose>
             <c:when test="${fn:length(ticketDatabase) == 0}">

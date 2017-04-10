@@ -19,8 +19,8 @@
     </head>
     <body>
         <jsp:include page="menu.jsp" />
-        <div style="text-align: center; background-color: #777; color: white;">
-            Topic #${param.id}
+        <div style="text-align: center; background-color: #DCDCDC; color: black;">
+            <h2>Topic #${param.id}</h2>
         </div>
         <div style="border-bottom:1px solid black"></div>
         <c:if test="${fn:length(messages) == 0}">
@@ -75,15 +75,15 @@
                            modelAttribute="messageForm">
 
                     <form:hidden path="topic_id" value="${param.id}"/>
-                    <form:label path="title">Title:</form:label><br/>
+                    <form:label path="title"><b>Title:</b></form:label><br/>
                     <form:input type="text" path="title" /><br/><br/>
 
-                    <form:label path="content">Content:</form:label><br/>
+                    <form:label path="content"><b>Content:</b></form:label><br/>
                     <form:input type="text" path="content"/><br/><br/>
 
                     <b>Attachments</b><br/>
                     <input type="file" name="attachments" multiple="multiple"/><br/><br/>
-                    <input type="submit" value="Submit"/>
+                    <input  type="submit" value="Submit"/>
                 </form:form>
             </div>
 
