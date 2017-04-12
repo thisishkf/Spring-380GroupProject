@@ -323,6 +323,7 @@ public class IndexController {
     public ModelAndView ShowMessage(WebRequest request, ModelMap model) {
         int id = Integer.parseInt(request.getParameter("id"));
         model.addAttribute("messages", topicRepo.listMessage(id));
+        model.addAttribute("users", topicRepo.listUser());
         model.addAttribute("attachmentDatabase", messageDatabase);
         return new ModelAndView("allMessage", "messageForm", new MessageForm());
     }

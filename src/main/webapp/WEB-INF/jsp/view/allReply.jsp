@@ -28,7 +28,7 @@
                 <c:forEach var="user" items="${users}">
 
                     <c:if test="${user.name eq reply.username && user.status != 'active'}">
-                        User is banned!
+                        {Show Blocked User - ${reply.username}}
                     </c:if>
                     <c:if test="${user.name eq reply.username && user.status == 'active'}">
 

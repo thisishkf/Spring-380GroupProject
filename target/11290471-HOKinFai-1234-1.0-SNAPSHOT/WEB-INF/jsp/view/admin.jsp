@@ -20,7 +20,11 @@
         <jsp:include page="menu.jsp" />
         <div style="text-align: left; background-color: #DCDCDC; color: black;">  
         <h2>Admin panel</h2>
+        
         </div>
+        
+        <a href="register"><font size="4">Register</font></a>
+        <br/> 
         <table>
             <tr>
                 <th>User Name</th><th>Password</th><th>Status</th>
